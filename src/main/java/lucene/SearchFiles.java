@@ -61,14 +61,26 @@ public class SearchFiles {
     //Convert the input file into an iteratable of pages to query
     File pageQueries = new File(inputFilePath);
     FileInputStream fileStream = new FileInputStream(pageQueries);
-    Iterable<Page> pages = DeserializeData.iterableAnnotations(fileStream);
+    Iterable<Page> pagesForDefaultRanks = DeserializeData.iterableAnnotations(fileStream);
+    Iterable<Page> pagesForCustomRanks = DeserializeData.iterableAnnotations(fileStream);
     
     
     try {
+    	//indicate that the output is being written to a file
+    	System.out.println("Searching pages with default ranking function...");
     	//runs the searches with the default rankings
-    	for(Page page: pages) {
+    	for(Page page: pagesForDefaultRanks) {
     		runSearchWithDefaultRank(page, indexPath);
     	}
+    	//All default ranked searches are done
+    	System.out.println("Default Ranking done! Written to file: $filename");
+    	
+    	//Search using custom ranking function
+    	System.out.println("Searching pages with custom searching function...");
+    	for(Page page: pagesForCustomRanks) {
+    		runSearch(page, indexPath, CustomSimilarity.getSimilarity());
+    	}
+    	System.out.println("Custom ranking done! Written to file $filename");
     } catch(Exception e) {
     	e.printStackTrace();
     }
@@ -94,7 +106,7 @@ public class SearchFiles {
   private static void runSearch(Page page, String indexPath, Similarity similarity) throws Exception {
 	    //convert page to search terms
 	  	String queryId = page.getPageId();
-	  	String queryString = page.getPageName();
+	  	String queryString = page.getPageName().toString();
 	  	
 	    Directory dir = FSDirectory.open(Paths.get(indexPath));
 	    IndexReader reader = DirectoryReader.open(dir);
@@ -127,7 +139,7 @@ public class SearchFiles {
 	    	float score = hits[j].score;
 	    	String paraId = document.get("id");
 	    	String paraBody = document.get("text").toString();
-	    	System.out.println("\t" + queryId + " " + paraId + " " + j + " " + hits[j].score + "Team9-" + similarity.toString());
+	    	System.out.println("\t$" + queryId + " $" + paraId + " $" + j + " $" + hits[j].score + "$Team9-$" + similarity.toString());
 	    }
   }
 }
