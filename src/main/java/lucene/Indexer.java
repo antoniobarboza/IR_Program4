@@ -67,7 +67,7 @@ public class Indexer {
   public static void main(String[] args) {
 	  //check if indexPath passed in, if not set to default value
     String indexPath;
-    if(args[0] != null) indexPath = args[0];
+    if(args.length != 0) indexPath = args[0];
     else indexPath = "./src/main/java/index";
     
     String docsPath = "./src/main/java/lucene/test200-train/train.pages.cbor-paragraphs.cbor";
