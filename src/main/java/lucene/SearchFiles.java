@@ -16,9 +16,12 @@
  */
 package lucene;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
@@ -48,15 +51,23 @@ public class SearchFiles {
   /**
    * Runs the search using an input file that is converted to pages and used as queries
    * 
-   * @param args args[0] is path to index args[1] path to input file
+   * @param args args[0] is path to index args[1] path to input file, if no args passed both set to default
    * @throws Exception if file opening fails or deserializeData fails
    */
   public static void main(String[] args) throws Exception {
-    //This is a directory to the index
-    String indexPath = "./src/main/java/index";
+    //This is a directory to the index, args[0] or default
+    String indexPath;
+    if(args.length > 0) indexPath = args[0];
+    else  indexPath = "./src/main/java/index";
     
-    //Taken from args[0], if empty defaults to 
-    String inputFilePath = "./src/main/java/data/test200-train/train.pages.cbor-outlines.cbor";
+    //Taken from args[1], if empty defaults to 
+    String inputFilePath;
+    if(args.length > 1) inputFilePath = args[1];
+    else inputFilePath = "./src/main/java/data/test200-train/train.pages.cbor-outlines.cbor";
+    
+    //Paths to the 2 output files
+    String defaultRankOutputPath = "./src/main/java/output/DefaultRankingOutput.txt";
+    String customRankOutputPath = "./src/main/java/output/CustomRankingOutput.txt";
     
     //Convert the input file into an iteratable of pages to query
     File pageQueries = new File(inputFilePath);
@@ -66,22 +77,35 @@ public class SearchFiles {
     
     
     try {
+    	//Delete the output files
+    	Files.deleteIfExists(Paths.get(defaultRankOutputPath));
+    	Files.deleteIfExists(Paths.get(customRankOutputPath));
+    	
+    	//Create the files to be written to
+    	File defaultRankOutputFile = new File(defaultRankOutputPath);
+    	defaultRankOutputFile.createNewFile();
+    	File customRankOutputFile = new File(customRankOutputPath);
+    	customRankOutputFile.createNewFile();
+    	//Create the file writers
+    	
+    	BufferedWriter defaultRankWriter = new BufferedWriter(new FileWriter(defaultRankOutputPath));
+    	BufferedWriter customRankWriter = new BufferedWriter(new FileWriter(customRankOutputPath));
+    	
     	//indicate that the output is being written to a file
-    	System.out.println("Searching pages with default ranking function...");
+    	System.out.println("Searching pages using different ranking functions...");
+    	
     	//runs the searches with the default rankings
     	for(Page page: pagesForDefaultRanks) {
-    		pagesForCustomRanks.add(page);
-    		runSearchWithDefaultRank(page, indexPath);
+    		runSearchWithDefaultRank(page, indexPath, defaultRankWriter);
+    		runSearch(page, indexPath, customRankWriter, CustomSimilarity.getSimilarity());
     	}
-    	//All default ranked searches are done
-    	System.out.println("Default Ranking done! Written to file: $filename");
+    	//close writers
+    	defaultRankWriter.close();
+    	customRankWriter.close();
     	
-    	//Search using custom ranking function
-    	System.out.println("Searching pages with custom searching function...");
-    	for(Page page: pagesForCustomRanks) {
-    		runSearch(page, indexPath, CustomSimilarity.getSimilarity());
-    	}
-    	System.out.println("Custom ranking done! Written to file $filename");
+    	//All default ranked searches are done
+    	System.out.println("All ranking done! Output files are found in folder: src/main/java/output");
+    	
     } catch(Exception e) {
     	e.printStackTrace();
     }
@@ -94,8 +118,8 @@ public class SearchFiles {
    * @param indexPath path to index folder
    * @throws Exception Thrown if parsing input file or opening index fails
    */
-  private static void runSearchWithDefaultRank(Page page, String indexPath) throws Exception {
-	  runSearch(page, indexPath, new BM25Similarity());
+  private static void runSearchWithDefaultRank(Page page, String indexPath, BufferedWriter writer) throws Exception {
+	  runSearch(page, indexPath, writer, new BM25Similarity());
   }
   
   /**
@@ -104,7 +128,7 @@ public class SearchFiles {
    * @param indexPath
    * @throws Exception
    */
-  private static void runSearch(Page page, String indexPath, Similarity similarity) throws Exception {
+  private static void runSearch(Page page, String indexPath, BufferedWriter writer, Similarity similarity) throws Exception {
 	    //convert page to search terms
 	  	String queryId = page.getPageId();
 	  	String queryString = page.getPageName().toString();
@@ -120,8 +144,7 @@ public class SearchFiles {
 	    //Query query = queryParser.parse(QueryParser.escape(queryString));
 	    Query query = queryParser.parse(queryString);
 	    
-	    //This initiates the search and returns top 10
-	    //System.out.println("STARTING RETREVAl: " + query.toString());
+	    //This initiates the search and returns top 100
 	    TopDocs searchResult = searcher.search(query,100);
 	    ScoreDoc[] hits = searchResult.scoreDocs;
 	    
@@ -129,19 +152,21 @@ public class SearchFiles {
 	    
 	    //If there are no results
 	    if (hits.length == 0) {
-	        System.out.println("No result found for: " + queryString);   	
+	        writer.write("No result found for: " + queryString + "\n");  
+	        //exit method nothing left to do
+	        return;
 	    }
 	    else {
-	    	System.out.println("Results for query: " + queryString);
+	    	writer.write("Results for query: " + queryString + "\n");
 	    }
-	    System.out.println("Results for query: " + queryString);
+	    
 	    for (int j=0; j < hits.length; j++ ) {
 	    	Document document = searcher.doc(hits[j].doc);
 	    	float score = hits[j].score;
 	    	String paraId = document.get("id");
-	    	String paraBody = document.get("text").toString();
-	    	System.out.println("\t$" + queryId + " $" + paraId + " $" + j + " $" + hits[j].score + "$Team9-$" + similarity.toString());
+	    	writer.write("\t$" + queryId + " $" + paraId + " $" + j + " $" + score + "$Team9-$" + similarity.toString() + "\n");
 	    }
+	    writer.write("\n\n");
   }
 }
 
