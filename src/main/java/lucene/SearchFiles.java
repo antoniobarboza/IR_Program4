@@ -62,7 +62,7 @@ public class SearchFiles {
     File pageQueries = new File(inputFilePath);
     FileInputStream fileStream = new FileInputStream(pageQueries);
     Iterable<Page> pagesForDefaultRanks = DeserializeData.iterableAnnotations(fileStream);
-    Iterable<Page> pagesForCustomRanks = DeserializeData.iterableAnnotations(fileStream);
+    ArrayList<Page> pagesForCustomRanks = new ArrayList<Page>();
     
     
     try {
@@ -70,6 +70,7 @@ public class SearchFiles {
     	System.out.println("Searching pages with default ranking function...");
     	//runs the searches with the default rankings
     	for(Page page: pagesForDefaultRanks) {
+    		pagesForCustomRanks.add(page);
     		runSearchWithDefaultRank(page, indexPath);
     	}
     	//All default ranked searches are done
