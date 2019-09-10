@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.antoniobarboza</groupId>
-    <artifactId>IR_program1</artifactId>
+    <artifactId>IR_Program2</artifactId>
     <version>0.1</version>
     <packaging>jar</packaging>
 
@@ -76,7 +76,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>/Program1/src/main/java/lucene/IndexFiles.java</mainClass>
+                            <mainClass>/Program2/src/main/java/lucene/IndexFiles.java</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
