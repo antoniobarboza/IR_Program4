@@ -60,9 +60,16 @@ public class Indexer {
   
   private Indexer() {}
 
-  /** Index all text files under a directory. */
+  /** Index all text files under a directory.
+   * 
+   * @param args args[0] will be the path to the index directory, default value of: ./src/main/java/index
+   */
   public static void main(String[] args) {
-    String indexPath = "./src/main/java/index";
+	  //check if indexPath passed in, if not set to default value
+    String indexPath;
+    if(args[0] != null) indexPath = args[0];
+    else indexPath = "./src/main/java/index";
+    
     String docsPath = "./src/main/java/lucene/test200-train/train.pages.cbor-paragraphs.cbor";
     
     File input = new File(docsPath);
@@ -109,7 +116,7 @@ public class Indexer {
 	  int commit = 0;
 	  System.out.println("Indexing documents...");
 	  for(Paragraph paragraph : paragraphs) {
-          if (commit == 50) {
+          if (commit == 10000) {
               writer.commit();
               commit = 0;
           }
