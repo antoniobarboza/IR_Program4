@@ -153,7 +153,7 @@ public class SearchFiles {
 	    
 	    //If there are no results
 	    if (hits.length == 0) {
-	        writer.write("No result found for: " + queryString + "\n");  
+	        //writer.write("No result found for: " + queryString + "\n");  
 	        //exit method nothing left to do
 	        return;
 	    }
