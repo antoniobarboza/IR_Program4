@@ -73,7 +73,6 @@ public class SearchFiles {
     File pageQueries = new File(inputFilePath);
     FileInputStream fileStream = new FileInputStream(pageQueries);
     Iterable<Page> pagesForDefaultRanks = DeserializeData.iterableAnnotations(fileStream);
-    ArrayList<Page> pagesForCustomRanks = new ArrayList<Page>();
     
     
     try {
@@ -97,7 +96,7 @@ public class SearchFiles {
     	//runs the searches with the default rankings
     	for(Page page: pagesForDefaultRanks) {
     		runSearchWithDefaultRank(page, indexPath, defaultRankWriter);
-    		runSearch(page, indexPath, customRankWriter, CustomSimilarity.getSimilarity());
+    		runSearch(page, indexPath, customRankWriter, CustomSimilarity.getSimilarity(), CustomSimilarity.getSimilarityName());
     	}
     	//close writers
     	defaultRankWriter.close();
@@ -119,18 +118,20 @@ public class SearchFiles {
    * @throws Exception Thrown if parsing input file or opening index fails
    */
   private static void runSearchWithDefaultRank(Page page, String indexPath, BufferedWriter writer) throws Exception {
-	  runSearch(page, indexPath, writer, new BM25Similarity());
+	  Similarity sim = new BM25Similarity();
+	  runSearch(page, indexPath, writer, sim, sim.getClass().getSimpleName());
   }
   
   /**
    * This method runs a search using the default ranking
-   * @param page
-   * @param indexPath
+   * @param page the page being used to search
+   * @param indexPath the path to the index directory
+   * @param similarityName the name of the similarity function being used
    * @throws Exception
    */
-  private static void runSearch(Page page, String indexPath, BufferedWriter writer, Similarity similarity) throws Exception {
+  private static void runSearch(Page page, String indexPath, BufferedWriter writer, Similarity similarity, String similarityName) throws Exception {
 	    //convert page to search terms
-	  	String queryId = page.getPageId();
+	  	String queryId = page.getPageId().toString();
 	  	String queryString = page.getPageName().toString();
 	  	
 	    Directory dir = FSDirectory.open(Paths.get(indexPath));
@@ -157,14 +158,14 @@ public class SearchFiles {
 	        return;
 	    }
 	    else {
-	    	writer.write("Results for query: " + queryString + "\n");
+	    	//writer.write("Results for query: " + queryString + "\n");
 	    }
 	    
 	    for (int j=0; j < hits.length; j++ ) {
 	    	Document document = searcher.doc(hits[j].doc);
 	    	float score = hits[j].score;
 	    	String paraId = document.get("id");
-	    	writer.write("\t$" + queryId + " $" + paraId + " $" + j + " $" + score + "$Team9-$" + similarity.toString() + "\n");
+	    	writer.write(queryId + " " + paraId + " " + j + " " + score + " Team9-" + similarityName + "\n");
 	    }
 	    writer.write("\n\n");
   }

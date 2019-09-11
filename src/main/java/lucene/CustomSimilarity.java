@@ -22,11 +22,20 @@ public class CustomSimilarity {
                 return sum1;
             }
 
-            @Override
-            public String toString() {
-                return "Custom ranking function";
-            }
+			@Override
+			public String toString() {
+				return null;
+			}
+
         };
         return mySimilarity;
     }
+	
+	/**
+	 * Returns the name of the ranking function
+	 */
+	public static String getSimilarityName() {
+		return "CustomSimilarity";
+		
+	}
 }
