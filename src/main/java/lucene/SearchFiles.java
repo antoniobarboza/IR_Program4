@@ -153,12 +153,7 @@ public class SearchFiles {
 	    
 	    //If there are no results
 	    if (hits.length == 0) {
-	        //writer.write("No result found for: " + queryString + "\n");  
-	        //exit method nothing left to do
 	        return;
-	    }
-	    else {
-	    	//writer.write("Results for query: " + queryString + "\n");
 	    }
 	    
 	    for (int j=0; j < hits.length; j++ ) {
@@ -167,7 +162,7 @@ public class SearchFiles {
 	    	String paraId = document.get("id");
 	    	writer.write(queryId + " Q0 " + paraId + " " + j + " " + score + " Team9-" + similarityName + "\n");
 	    }
-	    writer.write("\n\n");
+	    //writer.write("\n\n");
   }
 }
 
