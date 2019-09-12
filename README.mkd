@@ -1,5 +1,5 @@
 # IR_program1
-Tony and Bobby's individual program 1 solution
+Tony and Bobby's individual program 2 solution
 
 *To run Maven build*
 mvn clean install
@@ -10,13 +10,19 @@ mvn clean compile assembly:single
 *How to run the indexer: 
 java -Xmx50g -cp target/IR_program1-0.1-jar-with-dependencies.jar lucene.Indexer
 
-*The searcher will by default run the three queries: 
-Q1 power nap benefits
-Q2 whale vocalization production of sound
-Q3 pokemon puzzle league
+*The searcher will by default grap the train.pages.cbor-outlines.cbor file unless an argument is 
+specified!
 
-NOTE: If you give the SearchFiles arguments then it will run the three queries above plus the arguments as a query!
 *How to run the searcher:
 java -Xmx50g -cp target/IR_program1-0.1-jar-with-dependencies.jar lucene.SearchFiles
 
+*This will produce two files in the output directory
+1. Will be the DefaultRankingOutput that  uses the standard BM25 Simalarity 
+2. Will be the CustomRankingOutput that will be adopted from our custom ranking function 
+   from our team last week.
 
+To run the trec_eval tool:
+./trec_eval -m Rprec -m map -m ndcg_cut ../src/main/java/data/test200-train/train.pages.cbor-article.qrels ../src/main/java/output/DefaultRankingOutput.txt 
+./trec_eval -m Rprec -m map -m ndcg_cut ../src/main/java/data/test200-train/train.pages.cbor-article.qrels ../src/main/java/output/CustomRankingOutput.txt
+
+*FIX: This currently displays all ndcg values because the _20 parameter is broken.
