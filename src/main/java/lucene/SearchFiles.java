@@ -66,6 +66,7 @@ public class SearchFiles {
     else inputFilePath = "./src/main/java/data/test200-train/train.pages.cbor-outlines.cbor";
     
     //Paths to the 2 output files
+    //Question: do I have to take these as an input
     String defaultRankOutputPath = "./src/main/java/output/DefaultRankingOutput.txt";
     String customRankOutputPath = "./src/main/java/output/CustomRankingOutput.txt";
     
@@ -74,9 +75,8 @@ public class SearchFiles {
     FileInputStream fileStream = new FileInputStream(pageQueries);
     Iterable<Page> pagesForDefaultRanks = DeserializeData.iterableAnnotations(fileStream);
     
-    
     try {
-    	//Delete the output files
+    	//Delete the output files if they exist already
     	Files.deleteIfExists(Paths.get(defaultRankOutputPath));
     	Files.deleteIfExists(Paths.get(customRankOutputPath));
     	
@@ -165,7 +165,7 @@ public class SearchFiles {
 	    	Document document = searcher.doc(hits[j].doc);
 	    	float score = hits[j].score;
 	    	String paraId = document.get("id");
-	    	writer.write(queryId + " " + paraId + " " + j + " " + score + " Team9-" + similarityName + "\n");
+	    	writer.write(queryId + " Q0 " + paraId + " " + j + " " + score + " Team9-" + similarityName + "\n");
 	    }
 	    writer.write("\n\n");
   }
