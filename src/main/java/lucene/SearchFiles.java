@@ -43,7 +43,7 @@ import org.apache.lucene.store.FSDirectory;
 import edu.unh.cs.treccar_v2.Data.Page;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 
-/** Simple command-line based search demo. */
+
 public class SearchFiles {
 	
   private SearchFiles() {}
@@ -63,7 +63,7 @@ public class SearchFiles {
     //Taken from args[1], if empty defaults to 
     String inputFilePath;
     if(args.length > 1) inputFilePath = args[1];
-    else inputFilePath = "./src/main/java/data/test200-train/train.pages.cbor-outlines.cbor";
+    else inputFilePath = "./src/main/java/data/test200/test200-train/train.pages.cbor-outlines.cbor";
     
     //Paths to the 2 output files
     //Question: do I have to take these as an input
