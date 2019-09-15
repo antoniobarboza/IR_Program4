@@ -120,6 +120,7 @@ public class PrecisionatR {
 	    			while (line != null && (queryID.equals(currentQuery))) {
 	    				//loop lines until its different 
 	    				line = outputFile.readLine();
+	    				if(line == null) break;
 	    				
 	    				arrayLine = line.split(" ");
 	    				queryID = arrayLine[0];
@@ -140,6 +141,7 @@ public class PrecisionatR {
 	    			
 	    			rCount++; 
 	    			line = outputFile.readLine();
+	    			if(line == null) break;
 	    		}
 	    	}
 	    } catch (Exception e) {
