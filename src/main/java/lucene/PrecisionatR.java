@@ -35,7 +35,7 @@ public class PrecisionatR {
 	    String qrelFilePath;
 	    //if(args.length > 1) qrelFilePath = args[1];
 	    //else
-	    qrelFilePath = "./src/main/java/data/test200-train/train.pages.cbor-article.qrels";
+	    qrelFilePath = "./src/main/java/data/test200/test200-train/train.pages.cbor-article.qrels";
 	    
 	    //Map that maps query -> Rvalue
 	    Map<String, Integer> relevanceMap = new HashMap<String, Integer>();
@@ -91,7 +91,7 @@ public class PrecisionatR {
 	    //go line by line in our ranking file (looping R times for the query and calculating the P value)
 	    try {
 	    	String line = outputFile.readLine();
-	    	String currentQuery = "";
+	    	String currentQuery = null;
 	    	int rValue = 0;
 	    	int rCount = 0;
 	    	int tpValue = 0;
@@ -100,23 +100,24 @@ public class PrecisionatR {
 	    		String[] arrayLine = line.split(" ");
 	    		String queryID = arrayLine[0];
 	    		
-	    		if( currentQuery == "" ) { 
+	    		if( currentQuery == null ) { 
 	    			currentQuery = queryID;
 	    		}
 	    		rValue = relevanceMap.get(arrayLine[0]); 
-	    		System.out.println("RValue: " + rValue);
-	    		System.out.println("RCount: " +rCount);
-	    		System.out.println("queryID: " +queryID);
-	    		System.out.println("current: " +currentQuery);
-	    		if ( (rCount == rValue) || (queryID != currentQuery)) {
-	    			if ( queryID != currentQuery) {
+	    		//System.out.println("RValue: " + rValue);
+	    		//System.out.println("RCount: " +rCount);
+	    		//System.out.println("queryID: " +queryID);
+	    		//System.out.println("current: " +currentQuery);
+	    		
+	    		if ( (rCount == rValue) || (!queryID.equals(currentQuery))) {
+	    			if ( !queryID.equals(currentQuery)) {
 	    				currentQuery = queryID;
 	    			}
 	    			//Calculate the Precision, store in Hashmap
 	    			//Reset the values 
 	    			Float precision = (float)tpValue/(float)rValue;
 	    			precisionMap.put(arrayLine[0], precision);
-	    			while (line != null && (queryID == currentQuery)) {
+	    			while (line != null && (queryID.equals(currentQuery))) {
 	    				//loop lines until its different 
 	    				line = outputFile.readLine();
 	    				
