@@ -74,8 +74,28 @@ public class PrecisionatR {
 	    	reader.close();
 	    	// at this point R should be stored in the Hashmap for each querry
 	    	// Create an array of each query's P value
+	    	BufferedReader customReader = new BufferedReader(new FileReader(customRankOutputPath));
+	    	//System.out.println(returnArray( readerDefault, relevanceMap, docMap ));
+	    	HashMap<String, Float> customprecisionMap = returnArray( customReader, relevanceMap, docMap );
+
+	    	float sum = 0;
+	    	int count = 0;
+	    	for ( float value : customprecisionMap.values() ) {
+	    		sum = sum + value;
+	    		count++;
+	    	}
+	    	System.out.println("Custom Rank Output Precision at R: " + (sum/count));
+	    	
 	    	BufferedReader readerDefault = new BufferedReader(new FileReader(defaultRankOutputPath));
-	    	System.out.println(returnArray( readerDefault, relevanceMap, docMap ));
+	    	HashMap<String, Float> defaultprecisionMap = returnArray( readerDefault, relevanceMap, docMap );
+	    	System.out.println( defaultprecisionMap.size());
+	    	sum = 0;
+	    	count = 0;
+	    	for ( float value : defaultprecisionMap.values() ) {
+	    		sum = sum + value;
+	    		count++;
+	    	}
+	    	System.out.println("Default Rank Output Precision at R: " + (sum/count));
 	    	
 	    	
 	    } 
@@ -95,6 +115,7 @@ public class PrecisionatR {
 	    	int rValue = 0;
 	    	int rCount = 0;
 	    	int tpValue = 0;
+
 	    	while(line !=null) {
 	    		//Loop each line
 	    		String[] arrayLine = line.split(" ");
@@ -136,7 +157,6 @@ public class PrecisionatR {
 	    			if ( tempDocMap.containsKey(rankedDocID)) {
 	    				tpValue++; 
 	    			}
-	    			System.out.println("HIT");	
 	    			//increment every loop
 	    			
 	    			rCount++; 
