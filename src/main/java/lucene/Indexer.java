@@ -84,7 +84,8 @@ public class Indexer {
     	indexWriterConfig.setOpenMode(OpenMode.CREATE);
 
     	IndexWriter indexWriter = new IndexWriter(dir, indexWriterConfig);
-    	
+    	//clears index to avoid errors
+    	indexWriter.deleteAll();
     	indexDoc(indexWriter, input);
     	indexWriter.close();
     } catch(Exception e) {
