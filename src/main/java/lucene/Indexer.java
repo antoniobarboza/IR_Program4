@@ -70,7 +70,7 @@ public class Indexer {
     if(args.length != 0) indexPath = args[0];
     else indexPath = "./src/main/java/index";
     
-    String docsPath = "./src/main/java/data/test200-train/train.pages.cbor-paragraphs.cbor";
+    String docsPath = "./src/main/java/data/test200/test200-train/train.pages.cbor-paragraphs.cbor";
     
     File input = new File(docsPath);
     
