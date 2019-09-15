@@ -131,22 +131,25 @@ public class PrecisionatR {
 	    		//System.out.println("current: " +currentQuery);
 	    		
 	    		if ( (rCount == rValue) || (!queryID.equals(currentQuery))) {
+	    			Float precision = (float)tpValue/(float)rValue;
+    				precisionMap.put(currentQuery, precision);
 	    			if ( !queryID.equals(currentQuery)) {
 	    				currentQuery = queryID;
 	    			}
-	    			//Calculate the Precision, store in Hashmap
-	    			//Reset the values 
-	    			Float precision = (float)tpValue/(float)rValue;
-	    			precisionMap.put(arrayLine[0], precision);
-	    			while (line != null && (queryID.equals(currentQuery))) {
-	    				//loop lines until its different 
-	    				line = outputFile.readLine();
-	    				if(line == null) break;
+	    			else {
+	    				//Calculate the Precision, store in Hashmap
+	    				//Reset the values 
 	    				
-	    				arrayLine = line.split(" ");
-	    				queryID = arrayLine[0];
+	    				while (line != null && (queryID.equals(currentQuery))) {
+	    					//loop lines until its different 
+	    					line = outputFile.readLine();
+	    					if(line == null) break;
+	    				
+	    					arrayLine = line.split(" ");
+	    					queryID = arrayLine[0];
+	    				}
+	    				currentQuery = queryID;
 	    			}
-	    			currentQuery = queryID;
 	    			rCount = 0; 
 	    			tpValue = 0;
 	    		}
