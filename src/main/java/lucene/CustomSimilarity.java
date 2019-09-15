@@ -23,8 +23,9 @@ public class CustomSimilarity {
             @Override
             public String toString() {
                 return "CustomSimilarity";
-
+            }
         };
+
         return mySimilarity;
     }
 	
