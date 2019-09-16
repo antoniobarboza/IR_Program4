@@ -72,7 +72,7 @@ public class PrecisionatR {
 	    		line = reader.readLine();
 	    	}
 	    	reader.close();
-	    	// at this point R should be stored in the Hashmap for each querry
+	    	// at this point R should be stored in the Hashmap for each query
 	    	// Create an array of each query's P value
 	    	BufferedReader customReader = new BufferedReader(new FileReader(customRankOutputPath));
 	    	//System.out.println(returnArray( readerDefault, relevanceMap, docMap ));
