@@ -131,7 +131,9 @@ public class PrecisionatR {
 	    		//System.out.println("current: " +currentQuery);
 	    		
 	    		if ( (rCount == rValue) || (!queryID.equals(currentQuery))) {
-	    			Float precision = (float)tpValue/(float)rValue;
+	    			//check the last entry if its relevant
+
+	    			Float precision = (float)tpValue/(float)relevanceMap.get(currentQuery);
     				precisionMap.put(currentQuery, precision);
 	    			if ( !queryID.equals(currentQuery)) {
 	    				currentQuery = queryID;
