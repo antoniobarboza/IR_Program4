@@ -39,3 +39,6 @@ Custom Rank Output Precision at R: 0.5260762
 Default Rank Output Precision at R: 0.5963763
 
 *Our result is .0003 off from the trec_eval score. After hours of evaluating our precision at R we came to the conclusion it must be a rounding difference. 
+
+
+*Note my mac sometimes gives me a trec error on a fresh install only happens on one computer...
