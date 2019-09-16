@@ -1,6 +1,6 @@
 Installation Notes
 Part 1 run instructions
-Download the TREC Complex Answer Retrieval “test200“ dataset from http://trec-car.cs.unh.edu/ and unpack and place it into src/main/java/data
+Download the TREC Complex Answer Retrieval â€œtest200â€œ dataset from http://trec-car.cs.unh.edu/ and unpack and place it into src/main/java/data
 
 *To run Maven build*
 mvn clean install
@@ -8,7 +8,7 @@ mvn clean install
 *Compile
 mvn clean compile assembly:single
 
-NOTE:  You can specify an index as a command line argument but if you don’t it will be written                          to the default directory. Default index: src/main/java/index
+NOTE:  You can specify an index as a command line argument but if you donâ€™t it will be written                          to the default directory. Default index: src/main/java/index
 *How to run the indexer: 
 java -Xmx50g -cp target/IR_program2-0.1-jar-with-dependencies.jar lucene.Indexer
 
