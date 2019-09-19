@@ -29,7 +29,7 @@ And:
 
 Part 3
 *To run the Prescision at R file run:
-java -Xmx50g -cp target/IR_program2-0.1-jar-with-dependencies.jar lucene.PrecisionatR
+java -Xmx50g -cp target/IR_Program2-0.1-jar-with-dependencies.jar lucene.PrecisionatR
 
 Output: 
 Custom Rank Output Precision at R: 0.5260762
