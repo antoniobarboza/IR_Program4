@@ -10,11 +10,11 @@ mvn clean compile assembly:single
 
 NOTE:  You can specify an index as a command line argument but if you don’t it will be written                          to the default directory. Default index: src/main/java/index
 *How to run the indexer: 
-java -Xmx50g -cp target/IR_program2-0.1-jar-with-dependencies.jar lucene.Indexer
+java -Xmx50g -cp target/IR_Program2-0.1-jar-with-dependencies.jar lucene.Indexer
 
 NOTE: First command line argument is path to index, second is path to input file, if no arguments it will use default index: src/main/java/index and the file: train.pages.cbor-outlines.cbor. The output files can be found in src/main/java/output
 *How to run the searcher:
-java -Xmx50g -cp target/IR_program2-0.1-jar-with-dependencies.jar lucene.SearchFiles
+java -Xmx50g -cp target/IR_Program2-0.1-jar-with-dependencies.jar lucene.SearchFiles
 
 
 
@@ -23,12 +23,9 @@ Put the Trec_eval 9.0 version tool in the base directory of the project.
 Cd trec_eval.90 
 Compile the program using make 
 Run the command: 
-./trec_eval -m Rprec -m map -m ndcg_cut ../src/main/java/data/test200/test200-train/train.pages.cbor-article.qrels ../src/main/java/output/DefaultRankingOutput.txt 
+./trec_eval -m Rprec -m map -m ndcg_cut.20 ../src/main/java/data/test200/test200-train/train.pages.cbor-article.qrels ../src/main/java/output/DefaultRankingOutput.txt 
 And: 
-./trec_eval -m Rprec -m map -m ndcg_cut ../src/main/java/data/test200/test200-train/train.pages.cbor-article.qrels ../src/main/java/output/CustomRankingOutput.txt
-
-*Note ndcg_20 would not work so this prints out all ndcg values!
-
+./trec_eval -m Rprec -m map -m ndcg_cut.20 ../src/main/java/data/test200/test200-train/train.pages.cbor-article.qrels ../src/main/java/output/CustomRankingOutput.txt
 
 Part 3
 *To run the Prescision at R file run:
@@ -39,6 +36,3 @@ Custom Rank Output Precision at R: 0.5260762
 Default Rank Output Precision at R: 0.5963763
 
 *Our result is .0003 off from the trec_eval score. After hours of evaluating our precision at R we came to the conclusion it must be a rounding difference. 
-
-
-*Note my mac sometimes gives me a trec error on a fresh install only happens on one computer...
