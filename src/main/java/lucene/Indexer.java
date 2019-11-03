@@ -38,8 +38,10 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -124,7 +126,10 @@ public class Indexer {
 		  //System.out.println("PARAGRAPH : " + paragraph.getTextOnly());
 		  Document doc = new Document();
 		  doc.add(new StringField("id", paragraph.getParaId(), Field.Store.YES));   //Correct this needs to be a stringfield
-		  doc.add(new TextField("text", paragraph.getTextOnly(), Field.Store.YES)); //Correct this needs to be Textfield
+		  //doc.add(new TextField("text", paragraph.getTextOnly(), Field.Store.YES)); //Correct this needs to be Textfield
+		  FieldType type = new FieldType();
+		  type.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
+		  doc.add(new Field("text", paragraph.getTextOnly(), type));
 		  writer.addDocument(doc);
 		  commit++;
 	  }
