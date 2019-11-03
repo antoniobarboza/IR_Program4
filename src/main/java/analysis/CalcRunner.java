@@ -32,8 +32,9 @@ public class CalcRunner {
 			EvalCalc calc = new EvalCalc(file);
 			Float mean = calc.calculateMean();
 			Float standDev = calc.calculateStandardDev();
+			Float standError = calc.calculateStandardError();
 			System.out.println("Results for file: " + file);
-			System.out.println("Mean: " + mean + "\tStandard Deviation: " + standDev + "\n");
+			System.out.println("Mean: " + mean + "\tStandard Deviation: " + standDev + "\tStandard Error: " + standError + "\n");
 		}
 	}
 }
