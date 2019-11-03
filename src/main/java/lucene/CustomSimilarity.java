@@ -13,7 +13,7 @@ public class CustomSimilarity {
 	 * Returns a custom scoring function
 	 * 
 	 * @param simName name of which similarity that we will be using, the initials
-	 * @return a custom similarity based on selection, uds is default
+	 * @return a custom similarity based on selection, UL is default
 	 */
 	public static Similarity getSimilarity(String simName) {
         simName = simName.toLowerCase();
@@ -22,8 +22,10 @@ public class CustomSimilarity {
 				return getUL();
 			case "ujm":
 				return getUJM();
-			default:
+			case "uds":
 				return getUDS();
+			default:
+				return getUL();
 		
 		}
     }
@@ -32,9 +34,9 @@ public class CustomSimilarity {
 	private static Similarity getUL() {
 		SimilarityBase ul = new SimilarityBase() {
         	@Override
-            protected float score(BasicStats basicStats, float v, float v1) {
+            protected double score(BasicStats basicStats, double frequency, double docLength) {
         		
-                return v;
+                return 1.0;
             }
 
             @Override
@@ -48,9 +50,9 @@ public class CustomSimilarity {
 	private static Similarity getUJM() {
 		SimilarityBase ujm = new SimilarityBase() {
         	@Override
-            protected float score(BasicStats basicStats, float v, float v1) {
+            protected double score(BasicStats basicStats, double frequency, double docLength) {
         		
-                return v;
+                return 1.0;
             }
 
             @Override
@@ -64,9 +66,9 @@ public class CustomSimilarity {
 	private static Similarity getUDS() {
 		SimilarityBase uds = new SimilarityBase() {
         	@Override
-            protected float score(BasicStats basicStats, float v, float v1) {
+            protected double score(BasicStats basicStats, double frequency, double docLength) {
         		
-                return v;
+                return 1.0;
             }
 
             @Override
