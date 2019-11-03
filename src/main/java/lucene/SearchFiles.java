@@ -70,10 +70,13 @@ public class SearchFiles {
     if(args.length > 1) inputFilePath = args[1];
     else inputFilePath = "./src/main/java/test200/test200-train/train.pages.cbor-outlines.cbor";
     
-    //Paths to the 2 output files
-    //Question: do I have to take these as an input
+    //Paths to the 4 output files
+
     String defaultRankOutputPath = "./src/main/java/output/DefaultRankingOutput.txt";
-    String customRankOutputPath = "./src/main/java/output/CustomRankingOutput.txt";
+    String ulCustomRankOutputPath = "./src/main/java/output/ULCustomRankingOutput.txt";
+    String ujmCustomRankOutputPath = "./src/main/java/output/UJMCustomRankingOutput.txt"; 
+    String udsCustomRankOutputPath = "./src/main/java/output/UDSCustomRankingOutput.txt";
+    
     
     //Convert the input file into an iteratable of pages to query
     File pageQueries = new File(inputFilePath);
@@ -106,17 +109,28 @@ public class SearchFiles {
     try {
     	//Delete the output files if they exist already
     	Files.deleteIfExists(Paths.get(defaultRankOutputPath));
-    	Files.deleteIfExists(Paths.get(customRankOutputPath));
+    	Files.deleteIfExists(Paths.get(ulCustomRankOutputPath));
+    	Files.deleteIfExists(Paths.get(ujmCustomRankOutputPath));
+    	Files.deleteIfExists(Paths.get(udsCustomRankOutputPath));
     	
     	//Create the files to be written to
     	File defaultRankOutputFile = new File(defaultRankOutputPath);
     	defaultRankOutputFile.createNewFile();
-    	File customRankOutputFile = new File(customRankOutputPath);
-    	customRankOutputFile.createNewFile();
+    	File ulcustomRankOutputFile = new File(ulCustomRankOutputPath);
+    	ulcustomRankOutputFile.createNewFile();
+    	
+    	File ujmcustomRankOutputFile = new File(ujmCustomRankOutputPath);
+    	ujmcustomRankOutputFile.createNewFile();
+    	
+    	File udscustomRankOutputFile = new File(udsCustomRankOutputPath);
+    	udscustomRankOutputFile.createNewFile();
+    	
     	//Create the file writers
     	
     	BufferedWriter defaultRankWriter = new BufferedWriter(new FileWriter(defaultRankOutputPath));
-    	BufferedWriter customRankWriter = new BufferedWriter(new FileWriter(customRankOutputPath));
+    	BufferedWriter ulcustomRankWriter = new BufferedWriter(new FileWriter(ulCustomRankOutputPath));
+    	BufferedWriter ujmcustomRankWriter = new BufferedWriter(new FileWriter(ujmCustomRankOutputPath)); 	
+    	BufferedWriter udscustomRankWriter = new BufferedWriter(new FileWriter(udsCustomRankOutputPath));
     	
     	//indicate that the output is being written to a file
     	System.out.println("Searching pages using different ranking functions...");
@@ -124,12 +138,20 @@ public class SearchFiles {
     	//runs the searches with the default rankings
     	for(Page page: pagesForDefaultRanks) {
     		runSearchWithDefaultRank(page, reader, defaultRankWriter);
-    		Similarity sim = CustomSimilarity.getSimilarity("UL", (double) uniqueTerms.size(), (double) termCount );
-    		runSearch(page, reader, customRankWriter, sim, sim.toString());
+    		Similarity simul = CustomSimilarity.getSimilarity("UL", (double) uniqueTerms.size(), (double) termCount );
+    		runSearch(page, reader, ulcustomRankWriter, simul, simul.toString());
+    		
+    		Similarity simujm = CustomSimilarity.getSimilarity("UJM", (double) uniqueTerms.size(), (double) termCount );
+    		runSearch(page, reader, ujmcustomRankWriter, simujm, simujm.toString());
+    		
+    		Similarity simuds = CustomSimilarity.getSimilarity("UDS", (double) uniqueTerms.size(), (double) termCount );
+    		runSearch(page,reader,udscustomRankWriter, simuds, simuds.toString());
     	}
     	//close writers
     	defaultRankWriter.close();
-    	customRankWriter.close();
+    	ulcustomRankWriter.close();
+    	ujmcustomRankWriter.close();
+    	udscustomRankWriter.close();
     	
     	//All default ranked searches are done
     	System.out.println("All ranking done! Output files are found in folder: src/main/java/output");
