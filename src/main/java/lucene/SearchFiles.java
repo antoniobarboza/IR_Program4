@@ -24,12 +24,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Terms;
+import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -39,6 +43,7 @@ import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.BytesRef;
 
 import edu.unh.cs.treccar_v2.Data.Page;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
@@ -75,6 +80,28 @@ public class SearchFiles {
     FileInputStream fileStream = new FileInputStream(pageQueries);
     Iterable<Page> pagesForDefaultRanks = DeserializeData.iterableAnnotations(fileStream);
     
+    //create indexReader
+    Directory dir = FSDirectory.open(Paths.get(indexPath));
+    IndexReader reader = DirectoryReader.open(dir);
+    //Get all unique terms and the total number of terms in the corpus
+    int termCount = 0;
+    for (int i=0; i<reader.maxDoc(); i++) {
+        //Document doc = reader.document(i);
+        //String docID = doc.get("docId");
+        int docID = i;
+    	Terms terms = reader.getTermVector(docID, "text");
+    	TermsEnum termsIterator = terms.iterator();
+        HashSet<String> uniqueTerms = new HashSet<String>();
+        BytesRef byteRef = null;
+        while ((byteRef = termsIterator.next()) != null) {
+            //add each term to the unique terms count
+        	//This will be used for the unigram LM and will be passed to our custom similarities
+            String term = new String(byteRef.bytes, byteRef.offset, byteRef.length);
+            uniqueTerms.add(term);
+            termCount++;
+        }
+    }
+    
     try {
     	//Delete the output files if they exist already
     	Files.deleteIfExists(Paths.get(defaultRankOutputPath));
@@ -95,8 +122,8 @@ public class SearchFiles {
     	
     	//runs the searches with the default rankings
     	for(Page page: pagesForDefaultRanks) {
-    		runSearchWithDefaultRank(page, indexPath, defaultRankWriter);
-    		runSearch(page, indexPath, customRankWriter, CustomSimilarity.getSimilarity(), CustomSimilarity.getSimilarityName());
+    		runSearchWithDefaultRank(page, reader, defaultRankWriter);
+    		runSearch(page, reader, customRankWriter, CustomSimilarity.getSimilarity("UL", 0.0), CustomSimilarity.getSimilarityName());
     	}
     	//close writers
     	defaultRankWriter.close();
@@ -117,9 +144,9 @@ public class SearchFiles {
    * @param indexPath path to index folder
    * @throws Exception Thrown if parsing input file or opening index fails
    */
-  private static void runSearchWithDefaultRank(Page page, String indexPath, BufferedWriter writer) throws Exception {
+  private static void runSearchWithDefaultRank(Page page, IndexReader reader, BufferedWriter writer) throws Exception {
 	  Similarity sim = new BM25Similarity();
-	  runSearch(page, indexPath, writer, sim, sim.getClass().getSimpleName());
+	  runSearch(page, reader, writer, sim, sim.getClass().getSimpleName());
   }
   
   /**
@@ -129,13 +156,11 @@ public class SearchFiles {
    * @param similarityName the name of the similarity function being used
    * @throws Exception
    */
-  private static void runSearch(Page page, String indexPath, BufferedWriter writer, Similarity similarity, String similarityName) throws Exception {
+  private static void runSearch(Page page, IndexReader reader, BufferedWriter writer, Similarity similarity, String similarityName) throws Exception {
 	    //convert page to search terms
 	  	String queryId = page.getPageId().toString();
 	  	String queryString = page.getPageName().toString();
-	  	
-	    Directory dir = FSDirectory.open(Paths.get(indexPath));
-	    IndexReader reader = DirectoryReader.open(dir);
+	    
 	    IndexSearcher searcher = new IndexSearcher(reader);
 	    searcher.setSimilarity(similarity);
 	    
