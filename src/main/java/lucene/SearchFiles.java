@@ -91,6 +91,7 @@ public class SearchFiles {
         //String docID = doc.get("docId");
         int docID = i;
     	Terms terms = reader.getTermVector(docID, "text");
+    	if(terms == null) continue;
     	TermsEnum termsIterator = terms.iterator();
         BytesRef byteRef = null;
         while ((byteRef = termsIterator.next()) != null) {
