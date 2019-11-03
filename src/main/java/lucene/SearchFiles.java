@@ -68,7 +68,7 @@ public class SearchFiles {
     //Taken from args[1], if empty defaults to 
     String inputFilePath;
     if(args.length > 1) inputFilePath = args[1];
-    else inputFilePath = "./src/main/java/data/test200/test200-train/train.pages.cbor-outlines.cbor";
+    else inputFilePath = "./src/main/java/test200/test200-train/train.pages.cbor-outlines.cbor";
     
     //Paths to the 2 output files
     //Question: do I have to take these as an input
@@ -123,7 +123,8 @@ public class SearchFiles {
     	//runs the searches with the default rankings
     	for(Page page: pagesForDefaultRanks) {
     		runSearchWithDefaultRank(page, reader, defaultRankWriter);
-    		runSearch(page, reader, customRankWriter, CustomSimilarity.getSimilarity("UL", (double) uniqueTerms.size(), (double) termCount ), CustomSimilarity.getSimilarityName());
+    		Similarity sim = CustomSimilarity.getSimilarity("UL", (double) uniqueTerms.size(), (double) termCount );
+    		runSearch(page, reader, customRankWriter, sim, sim.toString());
     	}
     	//close writers
     	defaultRankWriter.close();

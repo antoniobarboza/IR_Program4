@@ -103,12 +103,4 @@ public class CustomSimilarity {
         };
         return uds;
 	}
-
-	/**
-	 * Returns the name of the ranking function
-	 */
-	public static String getSimilarityName() {
-		return "CustomSimilarity";
-		
-	}
 }
