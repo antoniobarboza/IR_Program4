@@ -85,13 +85,13 @@ public class SearchFiles {
     IndexReader reader = DirectoryReader.open(dir);
     //Get all unique terms and the total number of terms in the corpus
     int termCount = 0;
+    HashSet<String> uniqueTerms = new HashSet<String>();
     for (int i=0; i<reader.maxDoc(); i++) {
         //Document doc = reader.document(i);
         //String docID = doc.get("docId");
         int docID = i;
     	Terms terms = reader.getTermVector(docID, "text");
     	TermsEnum termsIterator = terms.iterator();
-        HashSet<String> uniqueTerms = new HashSet<String>();
         BytesRef byteRef = null;
         while ((byteRef = termsIterator.next()) != null) {
             //add each term to the unique terms count
@@ -123,7 +123,7 @@ public class SearchFiles {
     	//runs the searches with the default rankings
     	for(Page page: pagesForDefaultRanks) {
     		runSearchWithDefaultRank(page, reader, defaultRankWriter);
-    		runSearch(page, reader, customRankWriter, CustomSimilarity.getSimilarity("UL", 0.0), CustomSimilarity.getSimilarityName());
+    		runSearch(page, reader, customRankWriter, CustomSimilarity.getSimilarity("UL", (double) uniqueTerms.size(), (double) termCount ), CustomSimilarity.getSimilarityName());
     	}
     	//close writers
     	defaultRankWriter.close();
