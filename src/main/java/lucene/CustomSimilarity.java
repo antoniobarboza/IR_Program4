@@ -66,9 +66,11 @@ public class CustomSimilarity {
 		SimilarityBase ujm = new SimilarityBase() {
         	@Override
             protected double score(BasicStats basicStats, double frequency, double docLength) {
+        		//System.out.println( "Total terms: " + totalTerms );
         		double numerator = (double) frequency;
         		double denominator = (double) docLength;
         		double pofT = basicStats.getTotalTermFreq()/totalTerms;
+        		//System.out.println("Pot value: " + pofT);
         		double smooth = (1 - 0.9) * pofT;
                 return 0.9*(numerator/denominator) + smooth;
             }

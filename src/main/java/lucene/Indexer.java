@@ -129,7 +129,10 @@ public class Indexer {
 		  //doc.add(new TextField("text", paragraph.getTextOnly(), Field.Store.YES)); //Correct this needs to be Textfield
 		  FieldType type = new FieldType();
 		  type.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
+		  type.setStored(true);
+		  type.setStoreTermVectors(true);
 		  doc.add(new Field("text", paragraph.getTextOnly(), type));
+		  
 		  writer.addDocument(doc);
 		  commit++;
 	  }
