@@ -16,7 +16,7 @@ public class CustomSimilarity {
 	 * @return a custom similarity based on selection, UL is default
 	 */
 	public static Similarity getSimilarity(String simName) {
-        simName = simName.toLowerCase();
+		if(simName != null) simName = simName.toLowerCase();
 		switch(simName) {
 			case "ul":
 				return getUL();
