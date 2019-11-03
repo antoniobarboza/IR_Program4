@@ -9,13 +9,15 @@ import org.apache.lucene.search.similarities.SimilarityBase;
  * Creates a custom similarity/scoring function and returns it
  */
 public class CustomSimilarity {
+	private static double vocabLength;
 	/**
 	 * Returns a custom scoring function
 	 * 
 	 * @param simName name of which similarity that we will be using, the initials
 	 * @return a custom similarity based on selection, UL is default
 	 */
-	public static Similarity getSimilarity(String simName) {
+	public static Similarity getSimilarity(String simName, double termsInVocab) {
+		vocabLength = termsInVocab;
 		if(simName != null) simName = simName.toLowerCase();
 		switch(simName) {
 			case "ul":
@@ -36,10 +38,14 @@ public class CustomSimilarity {
 	 */
 	private static Similarity getUL() {
 		SimilarityBase ul = new SimilarityBase() {
-        	@Override
+        	/**
+        	 * This is called for each term
+        	 */
+			@Override
             protected double score(BasicStats basicStats, double frequency, double docLength) {
-        		
-                return 1.0;
+        		double numerator = (double) frequency + 1;
+        		double denominator = (double) docLength + vocabLength;
+                return numerator/denominator;
             }
 
             @Override
