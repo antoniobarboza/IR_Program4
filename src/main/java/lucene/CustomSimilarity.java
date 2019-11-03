@@ -30,7 +30,10 @@ public class CustomSimilarity {
 		}
     }
 	
-	//Comments will be added and these names will be changed to be more accurate
+	/**
+	 * This creates a similarity that is Unigram language model with Laplace smoothing  with alpha = 1
+	 * @return unigram LM 
+	 */
 	private static Similarity getUL() {
 		SimilarityBase ul = new SimilarityBase() {
         	@Override
@@ -47,6 +50,10 @@ public class CustomSimilarity {
         return ul;
 	}
 	
+	/**
+	 * Creates  similarity that is Unigram language model with Jelinek-Mercer smoothing with lambda = .9
+	 * @return
+	 */
 	private static Similarity getUJM() {
 		SimilarityBase ujm = new SimilarityBase() {
         	@Override
@@ -63,6 +70,10 @@ public class CustomSimilarity {
         return ujm;
 	}
 
+	/**
+	 * Creates a similarity that is Unigram language model with Dirichlet smoothing with mu = 1000
+	 * @return
+	 */
 	private static Similarity getUDS() {
 		SimilarityBase uds = new SimilarityBase() {
         	@Override
