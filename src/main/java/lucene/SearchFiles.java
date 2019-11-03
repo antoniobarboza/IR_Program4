@@ -123,7 +123,8 @@ public class SearchFiles {
     	//runs the searches with the default rankings
     	for(Page page: pagesForDefaultRanks) {
     		runSearchWithDefaultRank(page, reader, defaultRankWriter);
-    		runSearch(page, reader, customRankWriter, CustomSimilarity.getSimilarity("UL", (double) uniqueTerms.size(), (double) termCount ), CustomSimilarity.getSimilarityName());
+    		Similarity sim = CustomSimilarity.getSimilarity("UL", (double) uniqueTerms.size(), (double) termCount );
+    		runSearch(page, reader, customRankWriter, sim, sim.toString());
     	}
     	//close writers
     	defaultRankWriter.close();
