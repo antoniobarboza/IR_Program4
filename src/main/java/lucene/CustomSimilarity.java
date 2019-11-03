@@ -18,8 +18,8 @@ public class CustomSimilarity {
 	 * @return a custom similarity based on selection, UL is default
 	 */
 	public static Similarity getSimilarity(String simName, double termsInVocab, double totalTermCount) {
-		vocabLength = termsInVocab;
 		totalTerms = totalTermCount;
+		vocabLength = termsInVocab;
 		if(simName != null) simName = simName.toLowerCase();
 		switch(simName) {
 			case "ul":
@@ -66,8 +66,11 @@ public class CustomSimilarity {
 		SimilarityBase ujm = new SimilarityBase() {
         	@Override
             protected double score(BasicStats basicStats, double frequency, double docLength) {
-        		
-                return 1.0;
+        		double numerator = (double) frequency;
+        		double denominator = (double) docLength;
+        		double pofT = basicStats.getTotalTermFreq();
+        		double smooth = (1 - 0.9) * pofT;
+                return 0.9*(numerator/denominator) + smooth;
             }
 
             @Override
@@ -86,8 +89,11 @@ public class CustomSimilarity {
 		SimilarityBase uds = new SimilarityBase() {
         	@Override
             protected double score(BasicStats basicStats, double frequency, double docLength) {
+        		double pofT = basicStats.getTotalTermFreq();
+        		double numerator = (double) frequency + (1000*pofT);
+        		double denominator = (double) docLength + 1000;
         		
-                return 1.0;
+                return numerator/denominator;
             }
 
             @Override
