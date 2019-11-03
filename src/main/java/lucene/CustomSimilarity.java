@@ -52,7 +52,7 @@ public class CustomSimilarity {
 
             @Override
             public String toString() {
-                return "Unigram language model with Laplace smoothing";
+                return "UnigramLanguageModelWithLaplaceSmoothing";
             }
         };
         return ul;
@@ -75,7 +75,7 @@ public class CustomSimilarity {
 
             @Override
             public String toString() {
-                return "Unigram language model with Jelinek-Mercer smoothing";
+                return "UnigramLanguageModelWithJelinek-MercerSmoothing";
             }
         };
         return ujm;
@@ -98,7 +98,7 @@ public class CustomSimilarity {
 
             @Override
             public String toString() {
-                return "Unigram language model with Dirichlet smoothing";
+                return "UnigramLanguagModelWithDirichletSmoothing";
             }
         };
         return uds;
