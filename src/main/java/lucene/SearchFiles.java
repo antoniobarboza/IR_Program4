@@ -100,9 +100,9 @@ public class SearchFiles {
         while ((byteRef = termsIterator.next()) != null) {
             //add each term to the unique terms count
         	//This will be used for the unigram LM and will be passed to our custom similarities
-            String term = new String(byteRef.bytes, byteRef.offset, byteRef.length);
+            String term =byteRef.utf8ToString();
             uniqueTerms.add(term);
-            termCount++;
+            termCount += termsIterator.totalTermFreq();
         }
     }
     
