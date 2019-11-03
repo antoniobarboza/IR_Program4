@@ -16,12 +16,15 @@ import java.util.Map;
 class EvalCalc {
 	private String filePath;
 	private Float mean;
+	private int totalEntries;
+	private float standDev;
 	/**
 	 * Constructor that creates a calculator with a file path
 	 * @param filePath path to file to be used
 	 */
 	public EvalCalc(String filePath) {
 		this.filePath = filePath;
+		totalEntries = 0;
 	}
 	
 	//Paths to files that will be read
@@ -40,6 +43,7 @@ class EvalCalc {
 	    		line = reader.readLine();
 		    	line = line.replaceAll("\\s+", " ");
 		    	arrayLine = line.split(" ");
+		    	totalEntries++;
 	    	}
 	    	reader.close();
 
@@ -70,12 +74,19 @@ class EvalCalc {
 	    	}
 	    	reader.close();
 	    	//calculate the standard deviation
-			return (float) (Math.sqrt(numerator/(count-1)) / Math.sqrt(count));
+	    	standDev = (float) (Math.sqrt(numerator/(count-1)) / Math.sqrt(count));
+			return standDev;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			return 0;
 		}
 	}
+	
+	public float calculateStandardError() {
+		return (float) (standDev/Math.sqrt((float)totalEntries));
+	}
+	
+	
 
 }
