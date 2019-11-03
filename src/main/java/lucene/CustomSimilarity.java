@@ -68,7 +68,7 @@ public class CustomSimilarity {
             protected double score(BasicStats basicStats, double frequency, double docLength) {
         		double numerator = (double) frequency;
         		double denominator = (double) docLength;
-        		double pofT = basicStats.getTotalTermFreq();
+        		double pofT = basicStats.getTotalTermFreq()/totalTerms;
         		double smooth = (1 - 0.9) * pofT;
                 return 0.9*(numerator/denominator) + smooth;
             }
@@ -89,7 +89,7 @@ public class CustomSimilarity {
 		SimilarityBase uds = new SimilarityBase() {
         	@Override
             protected double score(BasicStats basicStats, double frequency, double docLength) {
-        		double pofT = basicStats.getTotalTermFreq();
+        		double pofT = basicStats.getTotalTermFreq()/totalTerms;
         		double numerator = (double) frequency + (1000*pofT);
         		double denominator = (double) docLength + 1000;
         		
