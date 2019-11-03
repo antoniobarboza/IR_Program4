@@ -10,7 +10,7 @@ touch ./src/main/java/analysis/defaultNdcg.txt
 ./trec_eval.9.0/trec_eval -m map ./src/main/java/test200/test200-train/train.pages.cbor-article.qrels src/main/java/output/DefaultRankingOutput.txt -q > src/main/java/analysis/defaultMap.txt
 
 ./trec_eval.9.0/trec_eval -m ndcg_cut.20 ./src/main/java/test200/test200-train/train.pages.cbor-article.qrels ./src/main/java/output/DefaultRankingOutput.txt -q > src/main/java/analysis/defaultNdcg.txt
-/Program2/trec_eval.9.0
+
 echo "Producing files for Custom Rank UL"
 
 touch ./src/main/java/analysis/ULcustomRprec.txt
