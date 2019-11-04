@@ -16,3 +16,9 @@ java -Xmx50g -cp target/IR_Program2-0.1-jar-with-dependencies.jar lucene.Indexer
 java -Xmx50g -cp target/IR_Program2-0.1-jar-with-dependencies.jar lucene.SearchFiles
 	
 All the ranking can be found in the src/main/java/output
+
+I made a bash script called produceInput.sh
+-> This produces all the txt files needed to use the EvalCalculator needed to calculate standard error and deviation. 
+	all these files then are used by CalcRunner.java which produces the standard dev, standard error. 
+	All this is contained in the analysis folder down src/main/java
+	
