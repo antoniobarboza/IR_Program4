@@ -264,7 +264,7 @@ public class SearcherRankLib {
    * @throws IOException 
    */
   public static HashMap<String, ArrayList<Float>> createRankLibFileForFeatureVector(String query, BufferedWriter writer, ArrayList<HashMap<String, Integer>> allScores, HashMap<String, Integer> relevantDocs) throws IOException {
-	  System.out.println("Generating RankLib Feature Vector File...");
+	  //System.out.println("Generating RankLib Feature Vector File...");
 	  //This is used to only print the score to 2 decimal places
 	  DecimalFormat df = new DecimalFormat();
 	  df.setMaximumFractionDigits(2);
@@ -306,7 +306,7 @@ public class SearcherRankLib {
 		  }
 	  }
 	  writer.close();
-	  System.out.println("Ranklib Feature Vector File Created!");
+	  
 	  return docsWithScores;
   }
   

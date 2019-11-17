@@ -73,7 +73,9 @@ public class Part2RankingRunner {
     	BufferedWriter writer = new BufferedWriter(new FileWriter(path));
     	
     	//Now call the search method that will generate the output file
+    	System.out.println("Generating RankLib Rating File...");
     	SearcherRankLib.createRankLibFile("testData", writer, allScores, relevantDocs);
+    	System.out.println("RankLib Rating File Created!");
 	}
 	
 	private static void runFeatureVectorRankingFunction() throws IOException {
@@ -129,6 +131,8 @@ public class Part2RankingRunner {
     	BufferedWriter writer = new BufferedWriter(new FileWriter(path));
     	
     	//Now call the search method that will generate the output file
+    	System.out.println("Generating Ranklib Feature Vector File...");
     	SearcherRankLib.createRankLibFileForFeatureVector("testData", writer, allScores, relevantDocs);
+    	System.out.println("Ranklib Feature Vector File Created!");
 	}
 }
