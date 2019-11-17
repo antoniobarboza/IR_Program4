@@ -52,7 +52,7 @@ import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 
 public class NewSearcher {
 	
-  private NewSearcher() {}
+  NewSearcher() {}
 
   /**
    * Runs the search using an input file that is converted to pages and used as queries
@@ -92,6 +92,8 @@ public class NewSearcher {
     	//indicate that the output is being written to a file
     	System.out.println("Searching pages using different ranking functions...");
     	
+    	//create the arraylist to hold all doc scores
+    	ArrayList<HashMap<String, Float>> allScores = new ArrayList<HashMap<String, Float>>();
     	//runs the searches with the default rankings
     	for(Similarity rank: ranks) {
     		//need to create a file and a writer for each ranking function
@@ -107,12 +109,12 @@ public class NewSearcher {
         	BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
         	
         	//make an array list of the hashmaps returned to construct the rank files
-        	
-    		runSearch(query, reader, writer, rank);
+    		allScores.add(runSearch(query, reader, writer, rank));
     		
+    		//close writer
     		writer.close();
     	}
-    	//close writers
+    	//create the ranklib files
     	
     	
     	//All default ranked searches are done
@@ -158,10 +160,47 @@ public class NewSearcher {
 	    	Document document = searcher.doc(hits[j].doc);
 	    	float score = hits[j].score;
 	    	String paraId = document.get("id");
-	    	//writer.write(queryId + " Q0 " + paraId + " " + j + " " + score + " Team11-" + similarityName + "\n");
+	    	writer.write(queryString + " Q0 " + paraId + " " + j + " " + score + " Team11-" + similarity.getClass().getSimpleName().toString() + "\n");
 	    	//creates rank lib file formats
+	    	docsWithScores.put(paraId, score);
 	    }
 	    return docsWithScores;
 	   //writer.write("\n\n");
+  }
+  
+  /**
+   * All of the ranking methods with scores are taken in and a ranklib file is created
+   * 
+   * @param allScores array list of all of the docs returned by a ranking function and their scores
+   * @param relevantDocs docID and a 1 if they are relevant
+ * @throws IOException 
+   */
+  private static void createRankLibFile(String query, BufferedWriter writer, ArrayList<HashMap<String, Float>> allScores, HashMap<String, Integer> relevantDocs) throws IOException {
+	  //This hashmap is used for the R vectors, docId -> list of scores in order for each method
+	  HashMap<String, ArrayList<Float>> docsWithScores = new HashMap<String, ArrayList<Float>>();
+	  int numRankings = allScores.size();
+	  //This loops through all ranking functions
+	  for(int i = 0; i < numRankings; i++) {
+		  //get the docID's and scores for this ranking function
+		  HashMap<String, Float> scores = allScores.get(i);
+		  //this loops through the docID's of each ranking function
+		  while(!scores.isEmpty()) {
+			  //This is the docId that will be searched in all of the maps, then removed and repeat until this map is empty
+			  String thisDoc = (String) scores.keySet().toArray()[0];
+			  //Write relevancy and qid to ranklib file
+			  writer.write(relevantDocs.get(thisDoc) + " qid:" + query + " ");
+			  ArrayList<Float> scoresForThisDoc = new ArrayList<Float>();
+			  for(int j = 0; j < numRankings; j++) {
+				  Float scoreForDoc = allScores.get(j).get(thisDoc);
+				  if(scoreForDoc == null) scoreForDoc = (float) 0;
+				  scoresForThisDoc.add(scoreForDoc);
+				  writer.write((j+1) + ":" + scoreForDoc + " ");
+				  if(scoreForDoc != 0) allScores.get(j).remove(thisDoc, scoreForDoc);
+			  }
+			  docsWithScores.put(thisDoc, scoresForThisDoc);
+			  //write the docID
+			  writer.write("# " + thisDoc + "\n");
+		  }
+	  }
   }
 }
