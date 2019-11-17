@@ -207,7 +207,7 @@ public class SearcherRankLib {
    * @param relevantDocs docID and a 1 if they are relevant, only contains docs that are relevant all others are assumed 0, writes their scores to 2 decimal places
  * @throws IOException 
    */
-  public static void createRankLibFile(String query, BufferedWriter writer, ArrayList<HashMap<String, Float>> allScores, HashMap<String, Integer> relevantDocs) throws IOException {
+  public static HashMap<String, ArrayList<Float>> createRankLibFile(String query, BufferedWriter writer, ArrayList<HashMap<String, Float>> allScores, HashMap<String, Integer> relevantDocs) throws IOException {
 	  System.out.println("Generating RankLib File...");
 	  //This is used to only print the score to 2 decimal places
 	  DecimalFormat df = new DecimalFormat();
@@ -249,6 +249,7 @@ public class SearcherRankLib {
 	  }
 	  writer.close();
 	  System.out.println("Ranklib file created!");
+	  return docsWithScores;
   }
   
   /**
@@ -258,13 +259,13 @@ public class SearcherRankLib {
    * @param relevantDocs docID and a 1 if they are relevant, only contains docs that are relevant all others are assumed 0, writes their scores to 2 decimal places
    * @throws IOException 
    */
-  public static void createRankLibFileForFeatureVector(String query, BufferedWriter writer, ArrayList<HashMap<String, Integer>> allScores, HashMap<String, Integer> relevantDocs) throws IOException {
+  public static HashMap<String, ArrayList<Float>> createRankLibFileForFeatureVector(String query, BufferedWriter writer, ArrayList<HashMap<String, Integer>> allScores, HashMap<String, Integer> relevantDocs) throws IOException {
 	  System.out.println("Generating RankLib File...");
 	  //This is used to only print the score to 2 decimal places
 	  DecimalFormat df = new DecimalFormat();
 	  df.setMaximumFractionDigits(2);
 	  //This hashmap is used for the R vectors, docId -> list of scores in order for each method
-	  HashMap<String, ArrayList<Integer>> docsWithScores = new HashMap<String, ArrayList<Integer>>();
+	  HashMap<String, ArrayList<Float>> docsWithScores = new HashMap<String, ArrayList<Float>>();
 	  int numRankings = allScores.size();
 	  //This loops through all ranking functions
 	  for(int i = 0; i < numRankings; i++) {
@@ -281,10 +282,12 @@ public class SearcherRankLib {
 			  Integer relevancy = relevantDocs.get(thisDoc);
 			  if(relevancy == null) relevancy = 0;
 			  writer.write(relevancy + " qid:" + query + " ");
-			  ArrayList<Integer> scoresForThisDoc = new ArrayList<Integer>();
+			  ArrayList<Float> scoresForThisDoc = new ArrayList<Float>();
 			  for(int j = 0; j < numRankings; j++) {
-				  Integer scoreForDoc = allScores.get(j).get(thisDoc);
-				  if(scoreForDoc == null) scoreForDoc =  0;
+				  Integer tempScore = allScores.get(j).get(thisDoc);
+				  Float scoreForDoc;
+				  if(tempScore == null) scoreForDoc =  (float) 0;
+				  else scoreForDoc = (float) (1.0 / (float) tempScore);
 				  //System.out.println("SCORE: " + scoreForDoc);
 				  scoresForThisDoc.add(scoreForDoc);
 				  writer.write((j+1) + ":" + df.format(scoreForDoc) + " ");
@@ -300,6 +303,7 @@ public class SearcherRankLib {
 	  }
 	  writer.close();
 	  System.out.println("Ranklib file created!");
+	  return docsWithScores;
   }
   
   
