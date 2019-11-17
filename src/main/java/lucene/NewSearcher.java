@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -105,6 +106,8 @@ public class NewSearcher {
         	
         	BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
         	
+        	//make an array list of the hashmaps returned to construct the rank files
+        	
     		runSearch(query, reader, writer, rank);
     		
     		writer.close();
@@ -128,7 +131,9 @@ public class NewSearcher {
    * @param similarityName the name of the similarity function being used
    * @throws Exception
    */
-  private static void runSearch(String queryString, IndexReader reader, BufferedWriter writer, Similarity similarity) throws Exception {
+  private static HashMap<String, Float> runSearch(String queryString, IndexReader reader, BufferedWriter writer, Similarity similarity) throws Exception {
+	    //HashMap is used to have the doc id's with scores
+	    HashMap<String, Float> docsWithScores = new HashMap<String, Float>();
 	    IndexSearcher searcher = new IndexSearcher(reader);
 	    searcher.setSimilarity(similarity);
 	    
@@ -146,7 +151,7 @@ public class NewSearcher {
 	    
 	    //If there are no results
 	    if (hits.length == 0) {
-	        return;
+	        return docsWithScores;
 	    }
 	    
 	    for (int j=0; j < hits.length; j++ ) {
@@ -154,8 +159,9 @@ public class NewSearcher {
 	    	float score = hits[j].score;
 	    	String paraId = document.get("id");
 	    	//writer.write(queryId + " Q0 " + paraId + " " + j + " " + score + " Team11-" + similarityName + "\n");
-	    	
+	    	//creates rank lib file formats
 	    }
+	    return docsWithScores;
 	   //writer.write("\n\n");
   }
 }
