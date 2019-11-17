@@ -99,31 +99,32 @@ public class SearcherRankLib {
     	//create the arraylist to hold all doc scores
     	ArrayList<HashMap<String, Float>> allScores = new ArrayList<HashMap<String, Float>>();
     	//runs the searches with the default rankings
-    	for(Similarity rank: ranks) {
-    		//need to create a file and a writer for each ranking function
-    		//Delete the output files if they exist already
-    		String filePath = "./src/main/java/output/" + rank.getClass().getSimpleName().toString() + ".txt";
-        	Files.deleteIfExists(Paths.get(filePath));
-        	
-        	//Create the files to be written to
-        	File defaultRankOutputFile = new File(filePath);
-        	defaultRankOutputFile.createNewFile();
-        	//Create the file writers
-        	
-        	BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
-        	
-        	//make an array list of the hashmaps returned to construct the rank files
-    		allScores.add(runSearch(query, reader, writer, rank));
-    		
-    		//close writer
-    		writer.close();
-    	}
-    	//create the ranklib files
+    	//Delete the output files if they exist already
+		String filePath = "./src/main/java/ranking/Part3Ranking.txt";
+		//Get the relevant docs
+		System.out.println("All ranking done! Output files are found in folder: src/main/java/output");
+    	HashMap<String, Integer> relevantDocs = getRelevantDocsFromQREL("./src/main/java/test200/test200-train/train.pages.cbor-article.qrels");
+    	Files.deleteIfExists(Paths.get(filePath));
     	
+    	//Create the files to be written to
+    	File defaultRankOutputFile = new File(filePath);
+    	BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+    	defaultRankOutputFile.createNewFile();
+    	for(Page page: pagesForDefaultRanks) {
+    		for(Similarity rank: ranks) {
+    			//make an array list of the hashmaps returned to construct the rank files
+    			allScores.add(runSearch(page, reader, writer, rank));
+    		}
+    		//add to output file
+    		createRankLibFile(page.getPageId().toString(), writer, allScores, relevantDocs);
+    		//Clear all scores so the new query can be added
+    		allScores.clear();
+    	}
+    	//close writer
+		writer.close();
     	
     	//All default ranked searches are done
-    	System.out.println("All ranking done! Output files are found in folder: src/main/java/output");
-    	HashMap<String, Integer> relevantDocs = getRelevantDocsFromQREL("./src/main/java/test200/test200-train/train.pages.cbor-article.qrels");
+    	
     	
     } catch(Exception e) {
     	e.printStackTrace();
@@ -138,7 +139,11 @@ public class SearcherRankLib {
    * @param similarityName the name of the similarity function being used
    * @throws Exception
    */
-  private static HashMap<String, Float> runSearch(String queryString, IndexReader reader, BufferedWriter writer, Similarity similarity) throws Exception {
+  private static HashMap<String, Float> runSearch(Page page, IndexReader reader, BufferedWriter writer, Similarity similarity) throws Exception {
+	//convert page to search terms
+	  	String queryId = page.getPageId().toString();
+	  	String queryString = page.getPageName().toString();
+	  	
 	    //HashMap is used to have the doc id's with scores
 	    HashMap<String, Float> docsWithScores = new HashMap<String, Float>();
 	    IndexSearcher searcher = new IndexSearcher(reader);
