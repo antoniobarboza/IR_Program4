@@ -16,9 +16,12 @@
  */
 package lucene;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -120,6 +123,7 @@ public class SearcherRankLib {
     	
     	//All default ranked searches are done
     	System.out.println("All ranking done! Output files are found in folder: src/main/java/output");
+    	HashMap<String, Integer> relevantDocs = getRelevantDocsFromQREL("./src/main/java/test200/test200-train/train.pages.cbor-article.qrels");
     	
     } catch(Exception e) {
     	e.printStackTrace();
@@ -167,6 +171,33 @@ public class SearcherRankLib {
 	    }
 	    return docsWithScores;
 	   //writer.write("\n\n");
+  }
+  
+  private static HashMap<String, Integer> getRelevantDocsFromQREL(String pathToQREL){
+	  HashMap<String, Integer> relevantDocs = new HashMap<String, Integer>();
+	  try {
+		BufferedReader reader = new BufferedReader(new FileReader(pathToQREL));
+		String line = reader.readLine();
+    	line = line.replaceAll("\\s+", " ");
+    	String[] arrayLine = line.split(" ");
+    	while(line != null) {
+    		String docId = arrayLine[0];
+    		int relevant = Integer.parseInt(arrayLine[arrayLine.length - 1]);
+    		if(relevant == 1) relevantDocs.put(docId, relevant);
+    		//Get next line
+    		line = reader.readLine();
+    		if(line != null) {
+    			line = line.replaceAll("\\s+", " ");
+    			arrayLine = line.split(" ");
+    		}
+    	}
+    	reader.close();
+		return relevantDocs;
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	  
+	  return relevantDocs;
   }
   
   /**
@@ -219,4 +250,7 @@ public class SearcherRankLib {
 	  writer.close();
 	  System.out.println("Ranklib file created!");
   }
+  
+  
+  
 }
