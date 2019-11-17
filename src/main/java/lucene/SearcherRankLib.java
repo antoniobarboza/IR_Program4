@@ -225,7 +225,7 @@ public class SearcherRankLib {
 			  //System.out.println("IN SECOND LOOP");
 			  //This is the docId that will be searched in all of the maps, then removed and repeat until this map is empty
 			  String thisDoc = (String) scores.keySet().toArray()[0];
-			  System.out.println("DOC: " + thisDoc);
+			  //System.out.println("DOC: " + thisDoc);
 			  //Write relevancy and qid to ranklib file
 			  Integer relevancy = relevantDocs.get(thisDoc);
 			  if(relevancy == null) relevancy = 0;
@@ -234,7 +234,58 @@ public class SearcherRankLib {
 			  for(int j = 0; j < numRankings; j++) {
 				  Float scoreForDoc = allScores.get(j).get(thisDoc);
 				  if(scoreForDoc == null) scoreForDoc = (float) 0;
-				  System.out.println("SCORE: " + scoreForDoc);
+				  //System.out.println("SCORE: " + scoreForDoc);
+				  scoresForThisDoc.add(scoreForDoc);
+				  writer.write((j+1) + ":" + df.format(scoreForDoc) + " ");
+				  if(scoreForDoc != 0) {
+					  allScores.get(j).remove(thisDoc, scoreForDoc);
+					  //scores.remove(thisDoc);   //.remove(thisDoc, scoreForDoc);
+				  }
+			  }
+			  docsWithScores.put(thisDoc, scoresForThisDoc);
+			  //write the docID
+			  writer.write("# " + thisDoc + "\n");
+		  }
+	  }
+	  writer.close();
+	  System.out.println("Ranklib file created!");
+  }
+  
+  /**
+   * All of the ranking methods with scores are taken in and a ranklib file is created
+   * 
+   * @param allScores array list of all of the docs returned by a ranking function and their rank
+   * @param relevantDocs docID and a 1 if they are relevant, only contains docs that are relevant all others are assumed 0, writes their scores to 2 decimal places
+   * @throws IOException 
+   */
+  public static void createRankLibFileForFeatureVector(String query, BufferedWriter writer, ArrayList<HashMap<String, Integer>> allScores, HashMap<String, Integer> relevantDocs) throws IOException {
+	  System.out.println("Generating RankLib File...");
+	  //This is used to only print the score to 2 decimal places
+	  DecimalFormat df = new DecimalFormat();
+	  df.setMaximumFractionDigits(2);
+	  //This hashmap is used for the R vectors, docId -> list of scores in order for each method
+	  HashMap<String, ArrayList<Integer>> docsWithScores = new HashMap<String, ArrayList<Integer>>();
+	  int numRankings = allScores.size();
+	  //This loops through all ranking functions
+	  for(int i = 0; i < numRankings; i++) {
+		  //System.out.println("IN FIRST LOOP");
+		  //get the docID's and scores for this ranking function
+		  HashMap<String, Integer> scores = allScores.get(i);
+		  //this loops through the docID's of each ranking function
+		  while(!scores.isEmpty()) {
+			  //System.out.println("IN SECOND LOOP");
+			  //This is the docId that will be searched in all of the maps, then removed and repeat until this map is empty
+			  String thisDoc = (String) scores.keySet().toArray()[0];
+			  //System.out.println("DOC: " + thisDoc);
+			  //Write relevancy and qid to ranklib file
+			  Integer relevancy = relevantDocs.get(thisDoc);
+			  if(relevancy == null) relevancy = 0;
+			  writer.write(relevancy + " qid:" + query + " ");
+			  ArrayList<Integer> scoresForThisDoc = new ArrayList<Integer>();
+			  for(int j = 0; j < numRankings; j++) {
+				  Integer scoreForDoc = allScores.get(j).get(thisDoc);
+				  if(scoreForDoc == null) scoreForDoc =  0;
+				  //System.out.println("SCORE: " + scoreForDoc);
 				  scoresForThisDoc.add(scoreForDoc);
 				  writer.write((j+1) + ":" + df.format(scoreForDoc) + " ");
 				  if(scoreForDoc != 0) {

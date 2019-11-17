@@ -16,6 +16,10 @@ import java.util.HashMap;
  */
 public class Part2RankingRunner {
 	public static void main(String [] args) throws IOException {
+		runRankingFunction();
+	}
+	
+	private static void runRankingFunction() throws IOException {
 		ArrayList<HashMap<String, Float>> allScores = new ArrayList<HashMap<String, Float>>();
 		//Create ranking function 1's list
 		HashMap<String, Float> r1 = new HashMap<String, Float>();
@@ -69,5 +73,61 @@ public class Part2RankingRunner {
     	
     	//Now call the search method that will generate the output file
     	SearcherRankLib.createRankLibFile("testData", writer, allScores, relevantDocs);
+	}
+	
+	private static void runFeatureVectorRankingFunction() throws IOException {
+		ArrayList<HashMap<String, Integer>> allScores = new ArrayList<HashMap<String, Integer>>();
+		//Create ranking function 1's list
+		HashMap<String, Integer> r1 = new HashMap<String, Integer>();
+		r1.put("D1", 1);
+		r1.put("D2", 2);
+		r1.put("D3", 3);
+		r1.put("D4", 4);
+		r1.put("D5", 5);
+		r1.put("D6", 6);
+		//Create ranking function 2's list
+		HashMap<String, Integer> r2 = new HashMap<String, Integer>();
+		r2.put("D2", 1);
+		r2.put("D5", 2);
+		r2.put("D6", 3);
+		r2.put("D7", 4);
+		r2.put("D8", 5);
+		r2.put("D9", 6);
+		r2.put("D10", 7);
+		r2.put("D11", 8);
+		//Create ranking function 3's list
+		HashMap<String, Integer> r3 = new HashMap<String, Integer>();
+		r3.put("D1", 1);
+		r3.put("D2", 2);
+		r3.put("D5", 3);
+		//Create ranking function 4's list
+		HashMap<String, Integer> r4 = new HashMap<String, Integer>();
+		r1.put("D1", 1);
+		r1.put("D2", 2);
+		r1.put("D8", 3);
+		r1.put("D10", 4);
+		r1.put("D12", 5);
+		
+		//Create the relevancy hashmap
+		HashMap<String, Integer> relevantDocs = new HashMap<String, Integer>();
+		relevantDocs.put("D2", 1);
+		relevantDocs.put("D3", 1);
+		relevantDocs.put("D5", 1);
+		
+		//Add all of the ranks to the allScores arraylist in their numerical order
+		allScores.add(r1);
+		allScores.add(r2);
+		allScores.add(r3);
+		allScores.add(r4);
+		
+		//Create the writer to be used to create the ranklib file
+		String path = "./src/main/java/ranking/TestRankLibFile.txt";
+    	Files.deleteIfExists(Paths.get(path));
+    	File rankOutput = new File(path);
+    	rankOutput.createNewFile();
+    	BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+    	
+    	//Now call the search method that will generate the output file
+    	SearcherRankLib.createRankLibFileForFeatureVector("testData", writer, allScores, relevantDocs);
 	}
 }
