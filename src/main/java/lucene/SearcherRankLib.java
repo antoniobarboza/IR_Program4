@@ -248,7 +248,7 @@ public class SearcherRankLib {
 		  }
 	  }
 	  writer.close();
-	  System.out.println("Ranklib file created!");
+	  System.out.println("Ranklib File Created!");
 	  return docsWithScores;
   }
   
@@ -260,7 +260,7 @@ public class SearcherRankLib {
    * @throws IOException 
    */
   public static HashMap<String, ArrayList<Float>> createRankLibFileForFeatureVector(String query, BufferedWriter writer, ArrayList<HashMap<String, Integer>> allScores, HashMap<String, Integer> relevantDocs) throws IOException {
-	  System.out.println("Generating RankLib File...");
+	  System.out.println("Generating RankLib Feature Vector File...");
 	  //This is used to only print the score to 2 decimal places
 	  DecimalFormat df = new DecimalFormat();
 	  df.setMaximumFractionDigits(2);
@@ -292,7 +292,7 @@ public class SearcherRankLib {
 				  scoresForThisDoc.add(scoreForDoc);
 				  writer.write((j+1) + ":" + df.format(scoreForDoc) + " ");
 				  if(scoreForDoc != 0) {
-					  allScores.get(j).remove(thisDoc, scoreForDoc);
+					  allScores.get(j).remove(thisDoc, tempScore);
 					  //scores.remove(thisDoc);   //.remove(thisDoc, scoreForDoc);
 				  }
 			  }
@@ -302,7 +302,7 @@ public class SearcherRankLib {
 		  }
 	  }
 	  writer.close();
-	  System.out.println("Ranklib file created!");
+	  System.out.println("Ranklib Feature Vector File Created!");
 	  return docsWithScores;
   }
   

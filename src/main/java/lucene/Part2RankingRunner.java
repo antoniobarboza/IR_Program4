@@ -17,6 +17,7 @@ import java.util.HashMap;
 public class Part2RankingRunner {
 	public static void main(String [] args) throws IOException {
 		runRankingFunction();
+		runFeatureVectorRankingFunction();
 	}
 	
 	private static void runRankingFunction() throws IOException {
@@ -121,7 +122,7 @@ public class Part2RankingRunner {
 		allScores.add(r4);
 		
 		//Create the writer to be used to create the ranklib file
-		String path = "./src/main/java/ranking/TestRankLibFile.txt";
+		String path = "./src/main/java/ranking/TestRankLibFeatureVectorFile.txt";
     	Files.deleteIfExists(Paths.get(path));
     	File rankOutput = new File(path);
     	rankOutput.createNewFile();
