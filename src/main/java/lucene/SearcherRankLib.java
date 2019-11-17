@@ -94,7 +94,7 @@ public class SearcherRankLib {
     try {
     	
     	//indicate that the output is being written to a file
-    	System.out.println("Searching pages using different ranking functions...");
+    	System.out.println("Searching pages using different ranking functions and generating RankLib file...");
     	
     	//create the arraylist to hold all doc scores
     	ArrayList<HashMap<String, Float>> allScores = new ArrayList<HashMap<String, Float>>();
@@ -102,7 +102,6 @@ public class SearcherRankLib {
     	//Delete the output files if they exist already
 		String filePath = "./src/main/java/ranking/Part3Ranking.txt";
 		//Get the relevant docs
-		System.out.println("All ranking done! Output files are found in folder: src/main/java/output");
     	HashMap<String, Integer> relevantDocs = getRelevantDocsFromQREL("./src/main/java/test200/test200-train/train.pages.cbor-article.qrels");
     	Files.deleteIfExists(Paths.get(filePath));
     	
@@ -124,7 +123,7 @@ public class SearcherRankLib {
 		writer.close();
     	
     	//All default ranked searches are done
-    	
+		System.out.println("All ranking done! Output files are found in folder: src/main/java/output");
     	
     } catch(Exception e) {
     	e.printStackTrace();
@@ -213,7 +212,7 @@ public class SearcherRankLib {
  * @throws IOException 
    */
   public static HashMap<String, ArrayList<Float>> createRankLibFile(String query, BufferedWriter writer, ArrayList<HashMap<String, Float>> allScores, HashMap<String, Integer> relevantDocs) throws IOException {
-	  System.out.println("Generating RankLib File...");
+	  //System.out.println("Generating RankLib File...");
 	  //This is used to only print the score to 2 decimal places
 	  DecimalFormat df = new DecimalFormat();
 	  df.setMaximumFractionDigits(2);
@@ -253,7 +252,7 @@ public class SearcherRankLib {
 		  }
 	  }
 	  writer.close();
-	  System.out.println("Ranklib File Created!");
+	  //System.out.println("Ranklib File Created!");
 	  return docsWithScores;
   }
   
