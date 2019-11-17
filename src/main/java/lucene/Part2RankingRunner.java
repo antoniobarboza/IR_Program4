@@ -68,6 +68,6 @@ public class Part2RankingRunner {
     	BufferedWriter writer = new BufferedWriter(new FileWriter(path));
     	
     	//Now call the search method that will generate the output file
-    	NewSearcher.createRankLibFile("testData", writer, allScores, relevantDocs);
+    	SearcherRankLib.createRankLibFile("testData", writer, allScores, relevantDocs);
 	}
 }

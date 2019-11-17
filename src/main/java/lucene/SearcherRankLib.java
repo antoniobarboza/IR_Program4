@@ -51,9 +51,9 @@ import edu.unh.cs.treccar_v2.Data.Page;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 
 
-public class NewSearcher {
+public class SearcherRankLib {
 	
-  NewSearcher() {}
+  SearcherRankLib() {}
 
   /**
    * Runs the search using an input file that is converted to pages and used as queries
