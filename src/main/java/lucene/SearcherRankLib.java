@@ -45,6 +45,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.similarities.BM25Similarity;
+import org.apache.lucene.search.similarities.ClassicSimilarity;
 import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -66,7 +67,7 @@ public class SearcherRankLib {
    */
   public static void main(String[] args) throws Exception {
 	ArrayList<Similarity> ranks = new ArrayList<Similarity>();
-	String query = "This is a temporary query";
+	//String query = "This is a temporary query";
     //This is a directory to the index, args[0] or default
     String indexPath;
     if(args.length > 0) indexPath = args[0];
@@ -81,7 +82,6 @@ public class SearcherRankLib {
     
     String defaultRankOutputPath = "./src/main/java/output/DefaultRankingOutput.txt";
     
-    
     //Convert the input file into an iteratable of pages to query
     File pageQueries = new File(inputFilePath);
     FileInputStream fileStream = new FileInputStream(pageQueries);
@@ -90,9 +90,32 @@ public class SearcherRankLib {
     //create indexReader
     Directory dir = FSDirectory.open(Paths.get(indexPath));
     IndexReader reader = DirectoryReader.open(dir);
+    //IndexReader reader1 = DirectoryReader.open(dir);
     
+
     try {
     	
+        int termCount = 0;
+        HashSet<String> uniqueTerms = new HashSet<String>();
+        
+        for (int i=0; i<reader.maxDoc(); i++) {
+            int docID = i;
+        	Terms terms = reader.getTermVector(docID, "text");
+        	if(terms == null) continue;
+        	TermsEnum termsIterator = terms.iterator();
+            BytesRef byteRef = null;
+            while ((byteRef = termsIterator.next()) != null) {
+
+                String term =byteRef.utf8ToString();
+                uniqueTerms.add(term);
+                termCount += termsIterator.totalTermFreq();
+            }
+        }
+        ranks.add(new ClassicSimilarity());
+        ranks.add( CustomSimilarity.getSimilarity("UL", (double) uniqueTerms.size(), (double) termCount ));
+        ranks.add( CustomSimilarity.getSimilarity("UJM", (double) uniqueTerms.size(), (double) termCount ));
+        ranks.add( CustomSimilarity.getSimilarity("UDS", (double) uniqueTerms.size(), (double) termCount ));
+        
     	//indicate that the output is being written to a file
     	System.out.println("Searching pages using different ranking functions and generating RankLib file...");
     	
@@ -115,7 +138,7 @@ public class SearcherRankLib {
     			allScores.add(runSearch(page, reader, writer, rank));
     		}
     		//add to output file
-    		createRankLibFile(page.getPageId().toString(), writer, allScores, relevantDocs);
+    		createRankLibFile(page.getPageId(), writer, allScores, relevantDocs);
     		//Clear all scores so the new query can be added
     		allScores.clear();
     	}
@@ -123,7 +146,7 @@ public class SearcherRankLib {
 		writer.close();
     	
     	//All default ranked searches are done
-		System.out.println("All ranking done! Output files are found in folder: src/main/java/output");
+		System.out.println("All ranking done! Ranking files are found in folder: src/main/java/ranking");
     	
     } catch(Exception e) {
     	e.printStackTrace();
@@ -169,7 +192,7 @@ public class SearcherRankLib {
 	    	Document document = searcher.doc(hits[j].doc);
 	    	float score = hits[j].score;
 	    	String paraId = document.get("id");
-	    	writer.write(queryString + " Q0 " + paraId + " " + j + " " + score + " Team11-" + similarity.getClass().getSimpleName().toString() + "\n");
+	    	//writer.write(queryString + " Q0 " + paraId + " " + j + " " + score + " Team11-" + similarity.getClass().getSimpleName().toString() + "\n");
 	    	//creates rank lib file formats
 	    	docsWithScores.put(paraId, score);
 	    }
@@ -251,7 +274,7 @@ public class SearcherRankLib {
 			  writer.write("# " + thisDoc + "\n");
 		  }
 	  }
-	  writer.close();
+	  //writer.close();
 	  //System.out.println("Ranklib File Created!");
 	  return docsWithScores;
   }
