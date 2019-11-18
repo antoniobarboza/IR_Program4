@@ -194,7 +194,7 @@ public class SearcherRankLib {
 	    	String paraId = document.get("id");
 	    	//writer.write(queryString + " Q0 " + paraId + " " + j + " " + score + " Team11-" + similarity.getClass().getSimpleName().toString() + "\n");
 	    	//creates rank lib file formats
-	    	docsWithScores.put(paraId, score);
+	    	docsWithScores.put(paraId, (float) (1.0/j));
 	    }
 	    return docsWithScores;
 	   //writer.write("\n\n");
