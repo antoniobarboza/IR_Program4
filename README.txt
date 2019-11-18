@@ -1,4 +1,10 @@
-Program 4 installation: Tony and Bobby 
+Program 5 installation: Tony and Bobby 
+
+Rank Lib installation: 
+Download the file from the My courses link: https://mycourses.unh.edu/courses/60222/assignments/410828
+put it in the root of the project directory. 
+command used to produce the ranking for part 2: 
+java -jar RankLib.jar -train src/main/java/ranking/TestRankLibFeatureVectorFile.txt -ranker 4 -qrel src/main/java/test200/test200-train/train.pages.cbor-article.qrels -save model.txt
 
 1. git clone https://github.com/antoniobarboza/IR_Program4.git
 
@@ -12,10 +18,13 @@ Program 4 installation: Tony and Bobby
 *How to run the indexer: 
 java -Xmx50g -cp target/IR_Program2-0.1-jar-with-dependencies.jar lucene.Indexer
 
-*How to run the Searcher 
-java -Xmx50g -cp target/IR_Program2-0.1-jar-with-dependencies.jar lucene.SearchFiles
+*How to run the Searcher - part 2
+java -Xmx50g -cp target/IR_Program2-0.1-jar-with-dependencies.jar lucene.Part2RankingRunner
 	
-All the ranking can be found in the src/main/java/output
+Part3: 
+java -Xmx50g -cp target/IR_Program2-0.1-jar-with-dependencies.jar lucene.SearcherRankLib
+
+The ranking directory contains the files feature ranking files 
 
 I made a bash script called produceInput.sh
 -> This produces all the txt files needed to use the EvalCalculator needed to calculate standard error and deviation. 
